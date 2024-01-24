@@ -124,8 +124,8 @@ stores_df = data_extractor.retrieve_stores_data(endpoints['store_retrieval'], he
 
 # s3_address = "s3://data-handling-public/products.csv"
 # # Provide AWS access key explicitly 
-# aws_access_key_id = "AKIAQ3EGWHFV6HOUWSFZ"
-# aws_secret_access_key = "M4ysfoC3mwSzRW1ajxIldO5PSIRxGEcU72Ffb1YZ"
+# aws_access_key_id = "REDACTED"
+# aws_secret_access_key = "REDACTED"
 # products_data = data_extractor.extract_from_s3(s3_address, aws_access_key_id, aws_secret_access_key)
 
 # print(products_data.head())
@@ -134,8 +134,8 @@ stores_df = data_extractor.retrieve_stores_data(endpoints['store_retrieval'], he
 
 s3_address = "s3://data-handling-public/date_details.json"
 # Provide AWS access key explicitly 
-aws_access_key_id = "AKIAQ3EGWHFV6HOUWSFZ"
-aws_secret_access_key = "M4ysfoC3mwSzRW1ajxIldO5PSIRxGEcU72Ffb1YZ"
+aws_access_key_id = "REDACTED"
+aws_secret_access_key = "REDCATED"
 date_details = data_extractor.extract_json_from_s3(s3_address, aws_access_key_id, aws_secret_access_key)
 
 # print(products_data.head())

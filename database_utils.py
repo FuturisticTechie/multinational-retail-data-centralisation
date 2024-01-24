@@ -62,6 +62,6 @@ if __name__ == '__main__':
         orders_data = dc.read_rds_table(engine, orders_table_name)
         # print("Orders DataFrame:")
         # print(orders_data)
-        orders_data.to_csv('orders_data.csv', index=False)
+        # orders_data.to_csv('orders_data.csv', index=False)
 
     main()
