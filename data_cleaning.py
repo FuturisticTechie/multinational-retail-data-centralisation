@@ -1,7 +1,4 @@
 
-
-
-
 import pandas as pd
 import re
 from datetime import datetime
@@ -211,6 +208,8 @@ data_cleaner = DataCleaning()
 # data_cleaner.import_processed_data('stores_data.csv')
 # data_cleaner.clean_store_data()
 # print(data_cleaner.table)
+# data_cleaner.table.to_csv('cleaned_store_data.csv', index=False)
+
 
 # data_cleaner.upload_to_db(data_cleaner.table, 'dim_store_details')
 
@@ -227,14 +226,17 @@ data_cleaner = DataCleaning()
 
 # data_cleaner.import_processed_data('orders_data.csv')
 # data_cleaner.clean_orders_data()
-# print(data_cleaner.table)
-# data_cleaner.table.to_csv('clean_order_data.csv', index=False)
+# # print(data_cleaner.table)
+# data_cleaner.table.to_csv('clean_order_data1.csv', index=False)
 
 # data_cleaner.upload_to_db(data_cleaner.table, 'orders_table')
 
-data_cleaner.import_processed_data('date_details.csv')
-data_cleaner.clean_date_details()
+# data_cleaner.import_processed_data('date_details.csv')
+# data_cleaner.clean_date_details()
 # print(data_cleaner.table)
 # data_cleaner.table.to_csv('clean_date_times.csv', index=False)
 
 # data_cleaner.upload_to_db(data_cleaner.table, 'dim_date_times')
+
+#In the orders table
+
