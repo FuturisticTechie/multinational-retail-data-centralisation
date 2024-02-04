@@ -17,9 +17,6 @@ class DataCleaning:
         self.table = dc.table_data.copy()  # Store the table as an instance variable
 
     def clean_user_data(self):
-        # if self.table is None:
-        #     raise ValueError("Table not loaded. Call load_data() first.")
-
         self.table = self.handle_null_values()
         self.table = self.handle_date_errors(date_column='date_of_birth')
         self.table = self.handle_date_errors(date_column='join_date')
@@ -29,17 +26,19 @@ class DataCleaning:
         self.table = self.handle_email_error(email_column='email_address')
         self.table = self.handle_country_error(country_column='country')
         self.table = self.handle_country_code_error(country_code='country_code')
+        self.table = self.clean_uuid_column(uuid_column='user_uuid')
 
 
     def handle_null_values(self):
         self.table.replace('NULL', pd.NA, inplace=True)      #Replace 'NULL' values with NaN
-        cleaned_table = self.table.dropna()                  #Drops rows with any NaN values
+        cleaned_table = self.table.dropna(how='all')          #Drops rows if all NaN
         return self.table
 
     def handle_date_errors(self, date_column):
-        self.table.loc[:, date_column] = pd.to_datetime(self.table[date_column], errors='coerce')  # sets invalid dates to NaT
+        self.table.loc[:, date_column] = pd.to_datetime(self.table[date_column], format='mixed', errors='coerce')  # sets invalid dates to NaT
         self.table.loc[pd.isna(self.table[date_column]), date_column] = None                        # Set invalid dates to None
         return self.table
+
 
     def handle_phone_error_gb(self):
         pattern = r'^\s*\(?(\+?44\)?[ \-]?\(0\)|0)[1-9]{1}[0-9]{2}[ \-]?[0-9]{4}[ \-]?[0-9]{3}\s*$'
@@ -100,6 +99,23 @@ class DataCleaning:
         self.table.dropna(subset=[country_code], inplace=True)
         return self.table
 
+    def clean_uuid_column(self, uuid_column):
+        pattern = r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+        for i, uuid_value in enumerate(self.table[uuid_column]):
+            if not re.match(pattern, str(uuid_value)):
+                self.table.loc[i, uuid_column] = np.nan  # Replace 'NULL' values with NaN
+        self.table.dropna(subset=[uuid_column], inplace=True)  # Drops rows with any NaN values
+        return self.table
+
+    def handle_longitude(self, longitude):
+        pattern = r'^\d+\.?\d*$'
+        for i, value in enumerate(self.table[longitude]):
+            if not re.match(pattern, str(value)):
+                self.table.loc[i, longitude] = np.nan  # Replace invalid values with NaN
+        self.table.dropna(subset=[longitude], inplace=True)  # Drops rows with any NaN values
+        return self.table
+
+
     def upload_to_db(self, dataframe, table_name):
         DATABASE_TYPE = 'postgresql'
         DBAPI = 'psycopg2'
@@ -139,18 +155,21 @@ class DataCleaning:
         self.table.drop(columns=[column_name], inplace=True)
         return self.table
 
-    def remove_row(self, index):
-        self.table.drop(index=index, inplace=True)
-        return self.table
 
     def clean_store_data(self):
         self.table = self.handle_null_values()
         self.table = self.handle_date_errors(date_column='opening_date')
         self.table = self.remove_column(column_name='lat')
-        self.table = self.remove_row(0)
-        self.table = self.remove_row(447)
-        self.table = self.remove_row(63)
-        self.table = self.remove_row(437)
+        self.table = self.handle_longitude(longitude='longitude')
+        self.table = self.remove_invalid_staff_numbers(staff_column='staff_numbers')
+        return self.table
+
+    def remove_invalid_staff_numbers(self, staff_column):
+        # Use pandas to_numeric to convert the column to numeric values,
+        # and keep only rows with valid numeric values
+        self.table[staff_column] = pd.to_numeric(self.table[staff_column], errors='coerce')
+        self.table.dropna(subset=[staff_column], inplace=True)
+
         return self.table
 
     def convert_product_weights(self):
@@ -174,8 +193,7 @@ class DataCleaning:
     def clean_products_data(self):
         self.table = self.handle_null_values()
         self.table = self.handle_date_errors(date_column='date_added')
-        self.table = self.remove_row(266)
-        self.table = self.remove_row(1660)
+        self.table = self.clean_uuid_column(uuid_column='uuid')
         return self.table
 
 
@@ -185,58 +203,15 @@ class DataCleaning:
         self.table = self.remove_column(column_name='last_name')
         self.table = self.remove_column(column_name='1')
         self.table = self.remove_column(column_name='level_0')
+        self.table = self.clean_uuid_column(uuid_column='date_uuid')
+        self.table = self.clean_uuid_column(uuid_column='user_uuid')
         return self.table
     
     def clean_date_details(self):
         self.table = self.handle_null_values()
+        self.table = self.clean_uuid_column(uuid_column='date_uuid')
         return self.table
 
 
 data_cleaner = DataCleaning()
-# data_cleaner.load_data()
-# data_cleaner.clean_user_data()
-# # data_cleaner.table.to_csv('cleaned_data.csv', index=False)
-# print(data_cleaner.table)
-# data_cleaner.upload_to_db(data_cleaner.table, 'dim_users')
-
-# data_cleaner.import_processed_data('card_data.csv')
-# data_cleaner.clean_card_data()
-# print(data_cleaner.table)
-
-# data_cleaner.upload_to_db(data_cleaner.table, 'dim_card_details')
-
-# data_cleaner.import_processed_data('stores_data.csv')
-# data_cleaner.clean_store_data()
-# print(data_cleaner.table)
-# data_cleaner.table.to_csv('cleaned_store_data.csv', index=False)
-
-
-# data_cleaner.upload_to_db(data_cleaner.table, 'dim_store_details')
-
-
-# data_cleaner.import_processed_data('products_data.csv')
-# data_cleaner.convert_product_weights()
-# data_cleaner.clean_products_data()
-# print(data_cleaner.table.head())
-
-# data_cleaner.table.to_csv('cleaned_data_kg.csv', index=False)
-
-# data_cleaner.upload_to_db(data_cleaner.table, 'dim_products')
-
-
-# data_cleaner.import_processed_data('orders_data.csv')
-# data_cleaner.clean_orders_data()
-# # print(data_cleaner.table)
-# data_cleaner.table.to_csv('clean_order_data1.csv', index=False)
-
-# data_cleaner.upload_to_db(data_cleaner.table, 'orders_table')
-
-# data_cleaner.import_processed_data('date_details.csv')
-# data_cleaner.clean_date_details()
-# print(data_cleaner.table)
-# data_cleaner.table.to_csv('clean_date_times.csv', index=False)
-
-# data_cleaner.upload_to_db(data_cleaner.table, 'dim_date_times')
-
-#In the orders table
-
+#code in main.py

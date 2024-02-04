@@ -17,15 +17,6 @@ SET weight_class =
     WHEN weight >= 140 THEN 'Truck_Required'
   END;
 
---Find out all rows where null has now been introduced 
-SELECT *
-FROM dim_products
-WHERE date_added IS NULL OR uuid IS NULL or removed IS NULL or product_code is NULL OR weight_class is NULL;
-
---Drop all rows with null values
-DELETE FROM dim_products
-WHERE index IN (788, 1217, 1841, 1133, 1400, 794, 307, 751);
-
 -- Rename removed column to still_available
 ALTER TABLE dim_products
 RENAME COLUMN removed TO still_available;

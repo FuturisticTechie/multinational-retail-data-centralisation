@@ -33,11 +33,7 @@ FROM dim_date_times;
 ALTER TABLE dim_date_times
 ALTER COLUMN time_period TYPE VARCHAR(10);
 
---Find and drop all rows with invalid values based on error message
-SELECT *
-FROM dim_date_times
-WHERE date_uuid = '7R2EEPHB6J';
-
 -- ALTER TABLE dim_date_times
 ALTER TABLE dim_date_times
 ALTER COLUMN date_uuid TYPE UUID USING date_uuid::UUID;
+

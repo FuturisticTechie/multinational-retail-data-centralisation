@@ -1,14 +1,9 @@
 
 
--- --first drop all rows where longtidue column is not a number
--- DELETE FROM dim_store_details
--- WHERE NOT longitude ~ E'^\\d+\\.?\\d*$';
-
 -- Cast longitude and latitude column from TEXT to FLOAT
 ALTER TABLE dim_store_details
 ALTER COLUMN longitude TYPE FLOAT USING longitude::FLOAT,
 ALTER COLUMN latitude TYPE FLOAT USING latitude::FLOAT;
-
 
 -- From dim_store_details, alter locality and continent from TEXT to VARCHAR(255)
 ALTER TABLE dim_store_details
@@ -22,10 +17,6 @@ FROM dim_store_details;
 -- Now use the output (11)to alter the data type of the store_code column
 ALTER TABLE dim_store_details
 ALTER COLUMN store_code TYPE VARCHAR(11);
-
--- --first drop all rows where staff_nunmbers column is not a number
--- DELETE FROM dim_store_details
--- WHERE NOT staff_numbers ~ E'^\\d+\\.?\\d*$';
 
 -- Alter staff_numbers from TEXT to SMALLINT
 ALTER TABLE dim_store_details
