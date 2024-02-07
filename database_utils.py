@@ -38,10 +38,16 @@ class DatabaseConnector:
 
 if __name__ == '__main__':
     def main():
-        # dc = DatabaseConnector('db_creds.yaml')  # Create an instance of DatabaseConnector
-        # table = dc.load_table()  # Call the instance method on the created instance
+        dc = DatabaseConnector('db_creds.yaml')  # Create an instance of DatabaseConnector
+        table = dc.load_table()  # Call the instance method on the created instance
 
         # table.to_csv('og_data.csv', index=False)
+
+        # unique_values = table['country_code'].unique()
+
+        # Print the unique values
+        # print(unique_values)
+
         # null_counts = table.isnull().sum()
         # print("Number of null values in each column:")
         # print(null_counts)
@@ -59,7 +65,7 @@ if __name__ == '__main__':
         print(f"Using orders table: {orders_table_name}")
 
         # Extract orders data from the 'orders_table'
-        orders_data = dc.read_rds_table(engine, orders_table_name)
+        # orders_data = dc.read_rds_table(engine, orders_table_name)
         # print("Orders DataFrame:")
         # print(orders_data)
         # orders_data.to_csv('orders_data.csv', index=False)

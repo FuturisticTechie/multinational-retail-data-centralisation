@@ -4,7 +4,7 @@
 UPDATE dim_products
 SET product_price = TRIM('£' FROM product_price);
 
-Add new column weight_class
+-- Add new column weight_class
 ALTER TABLE dim_products
 ADD COLUMN weight_class VARCHAR(255);
 

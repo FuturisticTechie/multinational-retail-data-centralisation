@@ -11,7 +11,7 @@ SELECT MAX(CHAR_LENGTH(CAST(expiry_date AS VARCHAR))) AS max_length
 FROM dim_card_details;
 
 ALTER TABLE dim_card_details
-ALTER COLUMN expiry_date TYPE VARCHAR(5);
+ALTER COLUMN expiry_date TYPE VARCHAR(10);
 
 -- change type to date
 ALTER TABLE dim_card_details

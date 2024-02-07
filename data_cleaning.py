@@ -20,10 +20,10 @@ class DataCleaning:
         self.table = self.handle_null_values()
         self.table = self.handle_date_errors(date_column='date_of_birth')
         self.table = self.handle_date_errors(date_column='join_date')
-        self.table = self.handle_phone_error_gb()
-        self.table = self.handle_phone_error_us()
-        self.table = self.handle_phone_error_de()
-        self.table = self.handle_email_error(email_column='email_address')
+        # self.table = self.handle_phone_error_gb()
+        # self.table = self.handle_phone_error_us()
+        # self.table = self.handle_phone_error_de()
+        # self.table = self.handle_email_error(email_column='email_address')
         self.table = self.handle_country_error(country_column='country')
         self.table = self.handle_country_code_error(country_code='country_code')
         self.table = self.clean_uuid_column(uuid_column='user_uuid')
@@ -32,6 +32,7 @@ class DataCleaning:
     def handle_null_values(self):
         self.table.replace('NULL', pd.NA, inplace=True)      #Replace 'NULL' values with NaN
         cleaned_table = self.table.dropna(how='all')          #Drops rows if all NaN
+        
         return self.table
 
     def handle_date_errors(self, date_column):
@@ -39,51 +40,50 @@ class DataCleaning:
         self.table.loc[pd.isna(self.table[date_column]), date_column] = None                        # Set invalid dates to None
         return self.table
 
+    # def handle_phone_error_gb(self):
+    #     pattern = r'^\s*\(?(\+?44\)?[ \-]?\(0\)|0)[1-9]{1}[0-9]{2}[ \-]?[0-9]{4}[ \-]?[0-9]{3}\s*$'
 
-    def handle_phone_error_gb(self):
-        pattern = r'^\s*\(?(\+?44\)?[ \-]?\(0\)|0)[1-9]{1}[0-9]{2}[ \-]?[0-9]{4}[ \-]?[0-9]{3}\s*$'
+    #     mask_gb = self.table['country_code'] == 'GB'
+    #     for i, row in self.table[mask_gb].iterrows():
+    #         phone = row['phone_number']
+    #         if not re.match(pattern, phone):
+    #             self.table.at[i, 'phone_number'] = None
 
-        mask_gb = self.table['country_code'] == 'GB'
-        for i, row in self.table[mask_gb].iterrows():
-            phone = row['phone_number']
-            if not re.match(pattern, phone):
-                self.table.at[i, 'phone_number'] = None
+    #     self.table.dropna(subset=['phone_number'], inplace=True)
+    #     return self.table
 
-        self.table.dropna(subset=['phone_number'], inplace=True)
-        return self.table
+    # def handle_phone_error_us(self):
+    #     pattern = r'^(1?)(-| ?)(\()?([0-9]{3})(\)|-| |\)-|\) )?([0-9]{3})(-| )?([0-9]{4}|[0-9]{4})$'
 
-    def handle_phone_error_us(self):
-        pattern = r'^(1?)(-| ?)(\()?([0-9]{3})(\)|-| |\)-|\) )?([0-9]{3})(-| )?([0-9]{4}|[0-9]{4})$'
-
-        for i, row in self.table.iterrows():
-            if row['country_code'] == 'US':
-                phone = row['phone_number']
-                if not re.match(pattern, phone):
-                    self.table.at[i, 'phone_number'] = None
+    #     for i, row in self.table.iterrows():
+    #         if row['country_code'] == 'US':
+    #             phone = row['phone_number']
+    #             if not re.match(pattern, phone):
+    #                 self.table.at[i, 'phone_number'] = None
         
-        self.table.dropna(subset=['phone_number'], inplace=True)
-        return self.table
+        # self.table.dropna(subset=['phone_number'], inplace=True)
+        # return self.table
 
-    def handle_phone_error_de(self):
-        pattern = r'^((00|\+)49)?(0?[2-9][0-9]{1,})$'
+    # def handle_phone_error_de(self):
+    #     pattern = r'^((00|\+)49)?(0?[2-9][0-9]{1,})$'
 
-        for i, row in self.table.iterrows():
-            if row['country_code'] == 'DE':
-                phone = row['phone_number']
-                if not re.match(pattern, phone):
-                    self.table.at[i, 'phone_number'] = None
+    #     for i, row in self.table.iterrows():
+    #         if row['country_code'] == 'DE':
+    #             phone = row['phone_number']
+    #             if not re.match(pattern, phone):
+    #                 self.table.at[i, 'phone_number'] = None
         
-        self.table.dropna(subset=['phone_number'], inplace=True)
-        return self.table
+        # self.table.dropna(subset=['phone_number'], inplace=True)
+        # return self.table
 
 
-    def handle_email_error(self, email_column):
-        pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
-        for i, email in enumerate(self.table[email_column]):
-            if not re.match(pattern, email):
-                self.table.loc[i, email_column] = np.nan             #Replace 'NULL' values with NaN
-        self.table.dropna(subset=[email_column], inplace=True)       #Drops rows with any NaN values
-        return self.table
+    # def handle_email_error(self, email_column):
+    #     pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    #     for i, email in enumerate(self.table[email_column]):
+    #         if not re.match(pattern, email):
+    #             self.table.loc[i, email_column] = np.nan             #Replace 'NULL' values with NaN
+    #     self.table.dropna(subset=[email_column], inplace=True)       #Drops rows with any NaN values
+    #     return self.table
 
     def handle_country_error(self, country_column):
         country_list = ['United Kingdom', 'Germany', 'United States']
@@ -93,6 +93,9 @@ class DataCleaning:
         return self.table
 
     def handle_country_code_error(self, country_code):
+        # Replace 'GGB' with 'GB'
+        self.table[country_code] = self.table[country_code].replace('GGB', 'GB')
+
         code_list = ['DE', 'GB', 'US']
         mask = self.table[country_code].isin(code_list)
         self.table.loc[~mask, country_code] = np.nan
@@ -134,21 +137,32 @@ class DataCleaning:
         self.table = self.handle_null_values()
         self.table = self.handle_date_errors(date_column='date_payment_confirmed')
         self.table = self.clean_card_number(card_column='card_number')
-        self.table = self.valid_expiry_date_format(date_column='expiry_date')
+        # self.table = self.valid_expiry_date_format(date_column='expiry_date')
         return self.table
     
     def clean_card_number(self, card_column):
-        self.table[card_column] = self.table[card_column].str.replace(r'\D', '', regex=True)
-        self.table = self.table[self.table[card_column].str.len() >= 13] 
+        # Apply the string cleaning operation
+        self.table[card_column] = self.table[card_column].str.replace(r'\D', '', regex=True)  
+        # Filter out rows with card numbers less than 5 characters long
+        self.table = self.table[self.table[card_column].str.len() >= 5]
+        
+        # Return the modified DataFrame
         return self.table
 
-    def valid_expiry_date_format(self, date_column):
-        pattern = r'^(0[1-9]|1[0-2])\/\d{2}$'
-        for i, date in enumerate(self.table[date_column]):
-            if not re.match(pattern, date):
-                self.table.loc[i, date_column] = np.nan             #Replace 'NULL' values with NaN
-        self.table.dropna(subset=[date_column], inplace=True)       #Drops rows with any NaN values
-        return self.table
+
+
+    # def clean_card_number(self, card_column):
+    #     self.table = self.table[card_column] = self.table[card_column].str.replace(r'\D', '', regex=True)
+    #     self.table = self.table[self.table[card_column].str.len() >= 5] 
+    #     return self.table
+
+    # def valid_expiry_date_format(self, date_column):
+    #     pattern = r'^(0[1-9]|1[0-2])\/\d{2}$'
+    #     for i, date in enumerate(self.table[date_column]):
+    #         if not re.match(pattern, date):
+    #             self.table.loc[i, date_column] = np.nan             #Replace 'NULL' values with NaN
+    #     self.table.dropna(subset=[date_column], inplace=True)       #Drops rows with any NaN values
+    #     return self.table
 
 
     def remove_column(self, column_name):
@@ -157,7 +171,15 @@ class DataCleaning:
 
 
     def clean_store_data(self):
-        self.table = self.handle_null_values()
+        # Replace 'N/A' with 'NULL' for the specified row and columns
+        # columns_to_replace = ['address', 'longitude', 'lat', 'locality']
+        # self.table.loc[0, columns_to_replace] = self.table.loc[0, columns_to_replace].replace('N/A', pd.NA)
+
+        # Apply handle_null_values() to all rows except the first one
+        # self.table.iloc[1:] = self.handle_null_values(self.table.iloc[1:])
+        # self.table.iloc[1:] = self.handle_null_values()
+
+        # self.table = self.handle_null_values()
         self.table = self.handle_date_errors(date_column='opening_date')
         self.table = self.remove_column(column_name='lat')
         self.table = self.handle_longitude(longitude='longitude')

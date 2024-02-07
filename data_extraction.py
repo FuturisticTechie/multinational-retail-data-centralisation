@@ -97,7 +97,10 @@ class DataExtractor:
 
 data_extractor = DataExtractor()
 pdf_link = 'https://data-handling-public.s3.eu-west-1.amazonaws.com/card_details.pdf'
-pdf_df = data_extractor.retrieve_pdf_data(pdf_link)
+# pdf_df = data_extractor.retrieve_pdf_data(pdf_link)
+
+
+
 # pdf_df.to_csv('card_data.csv', index=False)
 # null_counts = pdf_df.isnull().sum()
 # print("Number of null values in each column:")
