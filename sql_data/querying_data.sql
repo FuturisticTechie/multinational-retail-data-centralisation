@@ -1,5 +1,6 @@
 
 -- Task 1
+-- Total numnber of stores per country
 SELECT country_code AS country,
 	COUNT(*) AS total_no_stores
 FROM dim_store_details
@@ -9,6 +10,7 @@ ORDER BY total_no_stores DESC;
 
 
 -- Task 2
+-- locations with most stores
 SELECT locality AS locality,
 	COUNT(*) AS total_no_stores
 FROM dim_store_details
