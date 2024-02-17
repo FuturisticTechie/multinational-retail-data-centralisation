@@ -12,22 +12,22 @@ This project entails gathering data for a multinational company that sells vario
 4. Querying the data to obtain up-to-date metrics, to facilitate making data-driven decisions and get a better understanding of sales
 
 ## File structure 
-# database_utils.py
+### database_utils.py
 Connects and uploads to database on pgAdmin4 using 'DatabaseConnector' class
 
-# data_extraction.py
+### data_extraction.py
 Data extraction using 'DataExtractor' class, from pdf, apt and s3 sources
 
-# data_cleaning.py
+### data_cleaning.py
 Where the data cleaning code is written based on 'DataCleaning' class
 
-# main.py
+### main.py
 Where the data_cleaning.py and uploading process is executed
 
-# sql_schema
+### sql_schema
 Contains code that further clarifed columsna dn creates primary and foriegn keys 
 
-# sql_queries
+### sql_queries
 Contains sql quesries relaying to specific burinsess questions 
 
 ## Data sources
