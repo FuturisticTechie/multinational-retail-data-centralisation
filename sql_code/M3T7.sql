@@ -1,4 +1,5 @@
 
+
 --Find the max len of values in card_number column
 SELECT MAX(CHAR_LENGTH(CAST(card_number AS VARCHAR))) AS max_length
 FROM dim_card_details;

@@ -1,10 +1,10 @@
 
 
 db_creds.yaml
+og_data.csv
 output.csv
 cleaned_data.csv
 card_data.csv
-testing.py
 clean_order_data.csv
 cleaned_data_kg.csv
 orders_data.csv
@@ -15,3 +15,8 @@ clean_date_times.csv
 clean_order_data1.csv
 cleaned_store_data.csv
 cleaned_card_data.csv
+sql_code/
+data_cleaning_archive.py
+data_extraction_archive.py
+database_utils_archive.py
+

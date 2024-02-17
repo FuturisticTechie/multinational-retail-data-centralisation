@@ -9,25 +9,25 @@ class DatabaseConnector:
     def __init__(self, yaml_file):
         self.yaml_file = yaml_file
 
-    def read_db_creds(self, yaml_file_path):
+    def read_db_creds(self, yaml_file_path):                #loads yaml file
          with open(yaml_file_path, 'r') as file:
             db_creds = yaml.safe_load(file)
             return db_creds
 
-    def init_db_engine(self):
+    def init_db_engine(self):                               #obtains YAML creds, then connects to database containing the tables required
         self.creds = self.read_db_creds(self.yaml_file)
         engine = create_engine(f"postgresql+psycopg2://{self.creds['RDS_USER']}:{self.creds['RDS_PASSWORD']}@{self.creds['RDS_HOST']}:{self.creds['RDS_PORT']}/{self.creds['RDS_DATABASE']}")
         return engine
 
-    def list_db_tables(self, engine):
+    def list_db_tables(self, engine):                       #access table names using inspect(engine)
         inspector = inspect(engine)
         return inspector.get_table_names()
 
-    def read_rds_table(self, con, table):
+    def read_rds_table(self, con, table):                   #reads data from a specific table in the database, (read_sql_table is a pd library function)
         df = pd.read_sql_table(table, con)
         return df
 
-    def load_table(self):
+    def load_table(self):                                   #initialises db connection/ accesses tables in db/ reads data from 2nd table
         engine = self.init_db_engine()
         tables_list = self.list_db_tables(engine)
         print(tables_list)
@@ -42,16 +42,6 @@ if __name__ == '__main__':
         table = dc.load_table()  # Call the instance method on the created instance
 
         # table.to_csv('og_data.csv', index=False)
-
-        # unique_values = table['country_code'].unique()
-
-        # Print the unique values
-        # print(unique_values)
-
-        # null_counts = table.isnull().sum()
-        # print("Number of null values in each column:")
-        # print(null_counts)
-
 
         dc = DatabaseConnector('db_creds.yaml')  # Create an instance of DatabaseConnector
         engine = dc.init_db_engine()  # Initialize the database engine

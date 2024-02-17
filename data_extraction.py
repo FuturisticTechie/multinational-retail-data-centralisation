@@ -9,7 +9,7 @@ class DataExtractor:
     def __init__(self):
         pass
 
-    def retrieve_pdf_data(self, pdf_link, headers=None):
+    def retrieve_pdf_data(self, pdf_link, headers=None):        #use tabula to library to extract tables from the PDF and returns the data as a Pandas DataFrame
         pdf_table = tabula.read_pdf(pdf_link, pages='all')
         if pdf_table:
             if len(pdf_table) > 1:
@@ -18,33 +18,22 @@ class DataExtractor:
                 pdf_df = pdf_table[0]
         return pdf_df
 
-    def list_number_of_stores(self, endpoints, headers=None):
+    def list_number_of_stores(self, endpoints, headers=None):       #sends a GET request to a specified API retrieve the number of stores- returns json
         response = requests.get(endpoints['no_of_stores'], headers=headers)
         data = response.json()
         return data.get('number_stores', None)
 
     def retrieve_stores_data(self, store_endpoint, headers=None):
-        # Initialize an empty list to hold the store data
-        store_data = []
+        store_data = []                                     #store data in a new empty list
 
         # Loop over all possible store numbers
         for store_number in range(0, 451):
-            # Construct the store endpoint URL using the current store number
-            url = store_endpoint.format(store_number=store_number)
+            url = store_endpoint.format(store_number=store_number)  # Construct the store endpoint URL using the current store number
+            response = requests.get(url, headers=headers)   # Make a request to the store endpoint
+            store_json = response.json()                    # Extract the store data from the response JSON          
+            store_data.append(store_json)                   # Append the store data to the store_data list
 
-            # Make a request to the store endpoint
-            response = requests.get(url, headers=headers)
-
-            # Extract the store data from the response JSON
-            store_json = response.json()
-
-            # Append the store data to the store_data list
-            store_data.append(store_json)
-
-        # Convert the store data to a pandas DataFrame
-        store_data_df = pd.DataFrame(store_data)
-
-        # Return the DataFrame
+        store_data_df = pd.DataFrame(store_data)            # Convert the store data to a pandas DataFrame
         return store_data_df
     
 
@@ -94,12 +83,9 @@ class DataExtractor:
 
 
 
-
 data_extractor = DataExtractor()
 pdf_link = 'https://data-handling-public.s3.eu-west-1.amazonaws.com/card_details.pdf'
 # pdf_df = data_extractor.retrieve_pdf_data(pdf_link)
-
-
 
 # pdf_df.to_csv('card_data.csv', index=False)
 # null_counts = pdf_df.isnull().sum()
@@ -107,7 +93,7 @@ pdf_link = 'https://data-handling-public.s3.eu-west-1.amazonaws.com/card_details
 # print(null_counts)
 # print(pdf_df)
 
-# Example usage
+#API key access credentials
 api_key = 'yFBQbwXe9J3sd6zWVAMrK6lcxxr0q1lr2PT6DDMX'
 endpoints = {
     'store_retrieval': 'https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/store_details/{store_number}',
@@ -134,7 +120,6 @@ stores_df = data_extractor.retrieve_stores_data(endpoints['store_retrieval'], he
 # print(products_data.head())
 # products_data.to_csv('products_data.csv', index=False)
  
-
 s3_address = "s3://data-handling-public/date_details.json"
 # Provide AWS access key explicitly 
 aws_access_key_id = "REDACTED"

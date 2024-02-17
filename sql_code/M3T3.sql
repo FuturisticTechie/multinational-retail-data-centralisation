@@ -1,5 +1,7 @@
 
 
+
+
 -- Cast longitude and latitude column from TEXT to FLOAT
 ALTER TABLE dim_store_details
 ALTER COLUMN longitude TYPE FLOAT USING longitude::FLOAT,
@@ -14,9 +16,9 @@ ALTER COLUMN continent TYPE VARCHAR(255);
 SELECT MAX(CHAR_LENGTH(CAST(store_code AS VARCHAR))) AS max_length
 FROM dim_store_details;
 
--- Now use the output (11)to alter the data type of the store_code column
+-- Now use the output (12)to alter the data type of the store_code column
 ALTER TABLE dim_store_details
-ALTER COLUMN store_code TYPE VARCHAR(11);
+ALTER COLUMN store_code TYPE VARCHAR(12);
 
 -- Alter staff_numbers from TEXT to SMALLINT
 ALTER TABLE dim_store_details
@@ -37,3 +39,5 @@ FROM dim_store_details;
 -- Now use the output (2)to alter the data type of the country_code column
 ALTER TABLE dim_store_details
 ALTER COLUMN country_code TYPE VARCHAR(2);
+
+
