@@ -53,11 +53,11 @@ Contains sql quesries relaying to specific burinsess questions
 This code is free to use 
 
 ## Data Science and Data Engineering Tools
-Python (Pandas, NumPy)
-PostgreSQL
-AWS (boto3)
-SQLalchemy
-psycopg2
-tabula-py
-YAML (library)
-Boto3
+Python (Pandas, NumPy)  
+PostgreSQL  
+AWS (boto3)  
+SQLalchemy  
+psycopg2  
+tabula-py  
+YAML (library)  
+Boto3  
