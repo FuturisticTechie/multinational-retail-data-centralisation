@@ -59,5 +59,4 @@ AWS (boto3)
 SQLalchemy  
 psycopg2  
 tabula-py  
-YAML (library)  
-Boto3  
+YAML (library)   
