@@ -60,3 +60,4 @@ SQLalchemy
 psycopg2
 tabula-py
 YAML (library)
+Boto3
